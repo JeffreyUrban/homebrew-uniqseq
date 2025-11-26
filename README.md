@@ -1,18 +1,18 @@
-# Jeffreyurban Uniqseq
+# Homebrew Tap for uniqseq
 
-## How do I install these formulae?
+## Install
 
-`brew install jeffreyurban/uniqseq/<formula>`
-
-Or `brew tap jeffreyurban/uniqseq` and then `brew install <formula>`.
-
-Or, in a `brew bundle` `Brewfile`:
-
-```ruby
-tap "jeffreyurban/uniqseq"
-brew "<formula>"
+```
+brew tap jeffreyurban/uniqseq
+brew install uniqseq
 ```
 
-## Documentation
+## About
 
-`brew help`, `man brew` or check [Homebrew's documentation](https://docs.brew.sh).
+uniqseq performs stream-based deduplication for repeating sequences. 
+
+See the [main repository](https://github.com/JeffreyUrban/uniqseq) for documentation.
+
+## Issues
+
+Report formula issues here; report uniqseq bugs in the main repo.
