@@ -24,7 +24,7 @@ jobs:
           MAX_ATTEMPTS=60
           SLEEP_TIME=10
 
-          for i in $(seq 1 $MAX_ATTEMPTS); do
+          for i in $(seq 1 "$MAX_ATTEMPTS"); do
             echo "Attempt $i/$MAX_ATTEMPTS: Checking PyPI..."
 
             # Check if version exists
@@ -36,7 +36,7 @@ jobs:
               break
             fi
 
-            if [ $i -eq $MAX_ATTEMPTS ]; then
+            if [ "$i" -eq "$MAX_ATTEMPTS" ]; then
               echo "❌ Timeout: Version $VERSION not found on PyPI after ${MAX_ATTEMPTS} attempts"
               echo "release_found=false" >> $GITHUB_OUTPUT
               exit 1
@@ -75,10 +75,10 @@ jobs:
           SHA256="${{ steps.pypi.outputs.sha256 }}"
 
           # Update main package URL and SHA256
-          sed -i "s|url \"https://files.pythonhosted.org/packages/.*/uniqseq-.*\.tar\.gz\"|url \"$URL\"|" Formula/uniqseq.rb
+          sed -i "s|url \"https://files.pythonhosted.org/packages/.*/uniqseq-.*\.tar\.gz\"|url \"${URL}\"|" Formula/uniqseq.rb
 
           # Find the sha256 line that follows the uniqseq url and update it
-          awk -v url="$URL" -v sha="$SHA256" '
+          awk -v url="${URL}" -v sha="${SHA256}" '
             /url "https:.*uniqseq-/ { print; getline; sub(/sha256 ".*"/, "sha256 \"" sha "\""); print; next }
             {print}
           ' Formula/uniqseq.rb > Formula/uniqseq.rb.tmp
