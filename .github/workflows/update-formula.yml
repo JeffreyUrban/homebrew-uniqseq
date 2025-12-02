@@ -31,13 +31,13 @@ jobs:
             RELEASES=$(curl -s https://pypi.org/pypi/uniqseq/json | jq -r '.releases | keys[]')
 
             if echo "$RELEASES" | grep -q "^${VERSION}$"; then
-              echo "✅ Version $VERSION found on PyPI!"
+              echo "✅ Version ${VERSION} found on PyPI!"
               echo "release_found=true" >> $GITHUB_OUTPUT
               break
             fi
 
             if [ "$i" -eq "$MAX_ATTEMPTS" ]; then
-              echo "❌ Timeout: Version $VERSION not found on PyPI after ${MAX_ATTEMPTS} attempts"
+              echo "❌ Timeout: Version ${VERSION} not found on PyPI after ${MAX_ATTEMPTS} attempts"
               echo "release_found=false" >> $GITHUB_OUTPUT
               exit 1
             fi
@@ -63,10 +63,10 @@ jobs:
             exit 1
           fi
 
-          echo "url=$URL" >> $GITHUB_OUTPUT
-          echo "sha256=$SHA256" >> $GITHUB_OUTPUT
-          echo "✅ Package URL: $URL"
-          echo "✅ SHA256: $SHA256"
+          echo "url=${URL}" >> $GITHUB_OUTPUT
+          echo "sha256=${SHA256}" >> $GITHUB_OUTPUT
+          echo "✅ Package URL: ${URL}"
+          echo "✅ SHA256: ${SHA256}"
 
       - name: Update formula
         run: |
