@@ -32,18 +32,18 @@ jobs:
 
             if echo "$RELEASES" | grep -q "^${VERSION}$"; then
               echo "✅ Version ${VERSION} found on PyPI!"
-              echo "release_found=true" >> $GITHUB_OUTPUT
+              echo "release_found=true" >> "$GITHUB_OUTPUT"
               break
             fi
 
             if [ "$i" -eq "$MAX_ATTEMPTS" ]; then
               echo "❌ Timeout: Version ${VERSION} not found on PyPI after ${MAX_ATTEMPTS} attempts"
-              echo "release_found=false" >> $GITHUB_OUTPUT
+              echo "release_found=false" >> "$GITHUB_OUTPUT"
               exit 1
             fi
 
             echo "Version not yet available, waiting ${SLEEP_TIME}s..."
-            sleep $SLEEP_TIME
+            sleep "$SLEEP_TIME"
           done
 
       - name: Get package info from PyPI
@@ -63,8 +63,8 @@ jobs:
             exit 1
           fi
 
-          echo "url=${URL}" >> $GITHUB_OUTPUT
-          echo "sha256=${SHA256}" >> $GITHUB_OUTPUT
+          echo "url=${URL}" >> "$GITHUB_OUTPUT"
+          echo "sha256=${SHA256}" >> "$GITHUB_OUTPUT"
           echo "✅ Package URL: ${URL}"
           echo "✅ SHA256: ${SHA256}"
 
