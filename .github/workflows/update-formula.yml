@@ -18,32 +18,32 @@ jobs:
         id: wait
         run: |
           VERSION="${{ github.event.client_payload.version }}"
-          echo "Waiting for PyPI release of version $VERSION..."
+          echo "Waiting for PyPI release of version ${VERSION}..."
 
           # Wait up to 10 minutes for the release to appear on PyPI
           MAX_ATTEMPTS=60
           SLEEP_TIME=10
 
-          for i in $(seq 1 $MAX_ATTEMPTS); do
-            echo "Attempt $i/$MAX_ATTEMPTS: Checking PyPI..."
+          for i in $(seq 1 "$MAX_ATTEMPTS"); do
+            echo "Attempt ${i}/${MAX_ATTEMPTS}: Checking PyPI..."
 
             # Check if version exists
             RELEASES=$(curl -s https://pypi.org/pypi/uniqseq/json | jq -r '.releases | keys[]')
 
             if echo "$RELEASES" | grep -q "^${VERSION}$"; then
-              echo "✅ Version $VERSION found on PyPI!"
-              echo "release_found=true" >> $GITHUB_OUTPUT
+              echo "✅ Version ${VERSION} found on PyPI!"
+              echo "release_found=true" >> "$GITHUB_OUTPUT"
               break
             fi
 
-            if [ $i -eq $MAX_ATTEMPTS ]; then
-              echo "❌ Timeout: Version $VERSION not found on PyPI after ${MAX_ATTEMPTS} attempts"
-              echo "release_found=false" >> $GITHUB_OUTPUT
+            if [ "$i" -eq "$MAX_ATTEMPTS" ]; then
+              echo "❌ Timeout: Version ${VERSION} not found on PyPI after ${MAX_ATTEMPTS} attempts"
+              echo "release_found=false" >> "$GITHUB_OUTPUT"
               exit 1
             fi
 
             echo "Version not yet available, waiting ${SLEEP_TIME}s..."
-            sleep $SLEEP_TIME
+            sleep "$SLEEP_TIME"
           done
 
       - name: Get package info from PyPI
@@ -51,10 +51,10 @@ jobs:
         if: steps.wait.outputs.release_found == 'true'
         run: |
           VERSION="${{ github.event.client_payload.version }}"
-          echo "Fetching package info for version $VERSION"
+          echo "Fetching package info for version ${VERSION}"
 
           # Get source distribution info
-          INFO=$(curl -s https://pypi.org/pypi/uniqseq/json | jq -r ".releases[\"$VERSION\"][] | select(.packagetype==\"sdist\")")
+          INFO=$(curl -s https://pypi.org/pypi/uniqseq/json | jq -r ".releases[\"${VERSION}\"][] | select(.packagetype==\"sdist\")")
           URL=$(echo "$INFO" | jq -r '.url')
           SHA256=$(echo "$INFO" | jq -r '.digests.sha256')
 
@@ -63,10 +63,10 @@ jobs:
             exit 1
           fi
 
-          echo "url=$URL" >> $GITHUB_OUTPUT
-          echo "sha256=$SHA256" >> $GITHUB_OUTPUT
-          echo "✅ Package URL: $URL"
-          echo "✅ SHA256: $SHA256"
+          echo "url=${URL}" >> "$GITHUB_OUTPUT"
+          echo "sha256=${SHA256}" >> "$GITHUB_OUTPUT"
+          echo "✅ Package URL: ${URL}"
+          echo "✅ SHA256: ${SHA256}"
 
       - name: Update formula
         run: |
@@ -75,10 +75,10 @@ jobs:
           SHA256="${{ steps.pypi.outputs.sha256 }}"
 
           # Update main package URL and SHA256
-          sed -i "s|url \"https://files.pythonhosted.org/packages/.*/uniqseq-.*\.tar\.gz\"|url \"$URL\"|" Formula/uniqseq.rb
+          sed -i "s|url \"https://files.pythonhosted.org/packages/.*/uniqseq-.*\.tar\.gz\"|url \"${URL}\"|" Formula/uniqseq.rb
 
           # Find the sha256 line that follows the uniqseq url and update it
-          awk -v url="$URL" -v sha="$SHA256" '
+          awk -v url="${URL}" -v sha="${SHA256}" '
             /url "https:.*uniqseq-/ { print; getline; sub(/sha256 ".*"/, "sha256 \"" sha "\""); print; next }
             {print}
           ' Formula/uniqseq.rb > Formula/uniqseq.rb.tmp
