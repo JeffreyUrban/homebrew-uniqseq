@@ -18,14 +18,14 @@ jobs:
         id: wait
         run: |
           VERSION="${{ github.event.client_payload.version }}"
-          echo "Waiting for PyPI release of version $VERSION..."
+          echo "Waiting for PyPI release of version ${VERSION}..."
 
           # Wait up to 10 minutes for the release to appear on PyPI
           MAX_ATTEMPTS=60
           SLEEP_TIME=10
 
           for i in $(seq 1 "$MAX_ATTEMPTS"); do
-            echo "Attempt $i/$MAX_ATTEMPTS: Checking PyPI..."
+            echo "Attempt ${i}/${MAX_ATTEMPTS}: Checking PyPI..."
 
             # Check if version exists
             RELEASES=$(curl -s https://pypi.org/pypi/uniqseq/json | jq -r '.releases | keys[]')
@@ -51,10 +51,10 @@ jobs:
         if: steps.wait.outputs.release_found == 'true'
         run: |
           VERSION="${{ github.event.client_payload.version }}"
-          echo "Fetching package info for version $VERSION"
+          echo "Fetching package info for version ${VERSION}"
 
           # Get source distribution info
-          INFO=$(curl -s https://pypi.org/pypi/uniqseq/json | jq -r ".releases[\"$VERSION\"][] | select(.packagetype==\"sdist\")")
+          INFO=$(curl -s https://pypi.org/pypi/uniqseq/json | jq -r ".releases[\"${VERSION}\"][] | select(.packagetype==\"sdist\")")
           URL=$(echo "$INFO" | jq -r '.url')
           SHA256=$(echo "$INFO" | jq -r '.digests.sha256')
 
