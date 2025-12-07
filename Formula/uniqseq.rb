@@ -3,8 +3,8 @@ class Uniqseq < Formula
 
   desc "Stream-based deduplication for repeating sequences"
   homepage "https://github.com/JeffreyUrban/uniqseq"
-  url "https://files.pythonhosted.org/packages/10/16/49ce8881e2965641280be2744c6d40d2cd792a615b11b2d9bb2e30136925/uniqseq-0.2.0.tar.gz"
-  sha256 "5027504cb4f1dce318f89bf938b152fd185ba3b5cbf15fd5722f0e1e328fdb66"
+  url "https://files.pythonhosted.org/packages/53/d3/32a39283f34d3b113299c8728ea8b0cccbfba880ddba2912bdca73c06c41/uniqseq-0.3.0.tar.gz"
+  sha256 "ad2d0f82882029c2695bfbce700d90739207f2c148685fe20fafb54e07c7cb9c"
   license "MIT"
 
   depends_on "python@3.14"
@@ -51,7 +51,7 @@ class Uniqseq < Formula
   test do
     # Test version output
     output = shell_output("#{bin}/uniqseq --version")
-    assert_match "uniqseq version 0.2.0", output
+    assert_match "uniqseq version 0.3.0", output
 
     # Test basic functionality
     (testpath/"test.txt").write("line1\nline2\nline3\nline1\nline2\nline3\n")
